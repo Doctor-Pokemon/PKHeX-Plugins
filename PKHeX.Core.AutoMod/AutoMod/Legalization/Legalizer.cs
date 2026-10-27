@@ -129,6 +129,7 @@ public static class Legalizer
     public static AsyncLegalizationResult GetLegalFromSet(this ITrainerInfo tr, IBattleTemplate set)
     {
         var template = EntityBlank.GetBlank(tr);
+        PsyduckYellowSupport.AttachProfile(tr, template);
         if (template.Version == 0)
             template.Version = tr.Version;
 
@@ -147,6 +148,7 @@ public static class Legalizer
         AsyncLegalizationResult GetLegal()
         {
             var template = EntityBlank.GetBlank(tr);
+        PsyduckYellowSupport.AttachProfile(tr, template);
             if (template.Version == 0)
                 template.Version = tr.Version;
 
@@ -174,7 +176,7 @@ public static class Legalizer
         if (almres.Status == LegalizationResult.Regenerated)
             return almres;
 
-        if (EnableEasterEggs)
+        if (EnableEasterEggs && tr is not SAV4PY && !PsyduckYellow0029.IsEnabled(template))
         {
             var easteregg = tr.GetEasterEggFromSet(set, template);
             return almres with { Created = easteregg };

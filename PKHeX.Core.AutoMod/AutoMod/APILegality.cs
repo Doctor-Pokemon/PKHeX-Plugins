@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -47,6 +47,9 @@ public static class APILegality
     /// <param name="ogenc">Original encounter to prioritize, if available</param>
     public static PKM GetLegalFromTemplate(this ITrainerInfo dest, PKM template, IBattleTemplate set, out LegalizationResult satisfied, IEncounterable? ogenc = null)
     {
+        PsyduckYellowSupport.AttachProfile(dest, template);
+        if (PsyduckYellowSupport.TryGenerate(dest, template, set, out var projectResult, out satisfied))
+            return projectResult;
         RegenSet regen;
         if (set is RegenTemplate t)
         {
@@ -559,7 +562,7 @@ public static class APILegality
     /// <param name="enc">Encounter details matched to the Pokémon</param>
     /// <param name="regen">Regeneration information</param>
     /// <param name="criteria"></param>
-    private static void ApplySetDetails(PKM pk, IBattleTemplate set, ITrainerInfo handler, IEncounterTemplate enc, RegenSet regen, EncounterCriteria criteria)
+    internal static void ApplySetDetails(PKM pk, IBattleTemplate set, ITrainerInfo handler, IEncounterTemplate enc, RegenSet regen, EncounterCriteria criteria)
     {
         var language = regen.Extra.Language;
         var pidiv = MethodFinder.Analyze(pk);
